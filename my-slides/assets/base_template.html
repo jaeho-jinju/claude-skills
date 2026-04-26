@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      --bg: #0a0a18;
+      --card-bg: #12122a;
+      --card-bg-alt: #0e0e24;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --orange: #f97316;
+      --red: #f43f5e;
+      --yellow: #eab308;
+      --blue: #3b82f6;
+      --text: #ffffff;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    /* ===== BASE ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans KR', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* ===== PRESENTATION CONTAINER ===== */
+    .presentation { width: 100%; height: 100%; position: relative; }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 80px 80px;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    .slide.active { display: flex; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .slide-title {
+      font-size: 52px;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .slide-title.white { color: var(--text); }
+    .slide-title.gradient {
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .slide-title.gradient-warm {
+      background: linear-gradient(135deg, var(--orange), var(--yellow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .slide-subtitle {
+      font-size: 17px;
+      color: var(--text-sub);
+      text-align: center;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .caption {
+      margin-top: 28px;
+      font-size: 15px;
+      color: var(--text-sub);
+      text-align: center;
+    }
+    .caption strong { color: var(--text); }
+
+    /* inline highlight helpers */
+    .hl-purple { color: var(--purple); }
+    .hl-cyan { color: var(--cyan); }
+    .hl-green { color: var(--green); }
+    .hl-orange { color: var(--orange); }
+    .hl-red { color: var(--red); }
+    .hl-yellow { color: var(--yellow); }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+    }
+    .card.accent-cyan::before    { background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .card.accent-green::before   { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+    .card.accent-orange::before  { background: linear-gradient(90deg, var(--orange), var(--yellow)); }
+    .card.accent-red::before     { background: linear-gradient(90deg, var(--red), var(--orange)); }
+    .card.accent-purple::before  { background: linear-gradient(90deg, var(--purple), var(--blue)); }
+    .card.accent-blue::before    { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+    .card.no-accent::before      { display: none; }
+
+    /* ===== GRIDS ===== */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 1100px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 1060px;
+    }
+
+    /* ===== STAT CARD (cards-3 / cards-2 with big numbers) ===== */
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+    .stat-icon { font-size: 48px; margin-bottom: 4px; }
+    .stat-number {
+      font-size: 80px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--purple);
+    }
+    .stat-number.cyan   { color: var(--cyan); }
+    .stat-number.green  { color: var(--green); }
+    .stat-number.orange { color: var(--orange); }
+    .stat-number.white  { color: var(--text); }
+    .stat-label {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .stat-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+
+    /* ===== TAG / BADGE ===== */
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .tag.purple { background: rgba(168,85,247,0.2);  color: var(--purple); }
+    .tag.cyan   { background: rgba(6,182,212,0.2);   color: var(--cyan); }
+    .tag.green  { background: rgba(16,185,129,0.2);  color: var(--green); }
+    .tag.orange { background: rgba(249,115,22,0.2);  color: var(--orange); }
+    .tag.red    { background: rgba(244,63,94,0.2);   color: var(--red); }
+    .tag.blue   { background: rgba(59,130,246,0.2);  color: var(--blue); }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-table { width: 100%; max-width: 1100px; }
+    .comparison-headers {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .comparison-header {
+      border-radius: 12px;
+      padding: 14px 20px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .comparison-header.left-col { background: transparent; }
+    .comparison-header.col-a { background: rgba(168,85,247,0.25); border: 1px solid rgba(168,85,247,0.4); }
+    .comparison-header.col-b { background: rgba(16,185,129,0.2);  border: 1px solid rgba(16,185,129,0.4); }
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .comparison-row-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--cyan);
+      padding: 0 8px;
+    }
+    .comparison-cell {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--text-sub);
+      text-align: center;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .comparison-cell.highlighted {
+      background: rgba(16,185,129,0.12);
+      color: var(--text);
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+    .comparison-footer {
+      margin-top: 16px;
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.25);
+      border-radius: 12px;
+      padding: 14px 24px;
+      text-align: center;
+      font-size: 15px;
+      color: var(--text-sub);
+    }
+    .comparison-footer .label {
+      font-weight: 700;
+      color: var(--purple);
+      margin-right: 8px;
+    }
+
+    /* ===== TIMELINE ===== */
+    .timeline-wrap {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: flex-start;
+    }
+    .timeline-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .timeline-connector {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .tl-num {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .tl-bar { flex: 1; height: 4px; }
+    .tl-content { text-align: center; padding: 0 8px; }
+    .tl-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .tl-desc  { font-size: 13px; color: var(--text-sub); line-height: 1.5; }
+
+    /* ===== NUMBERED LIST ===== */
+    .num-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 900px;
+    }
+    .num-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 18px 22px;
+      background: var(--card-bg);
+      border-radius: 12px;
+    }
+    .num-item.active {
+      background: rgba(168,85,247,0.12);
+      border: 1px solid rgba(168,85,247,0.35);
+    }
+    .num-circle {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .num-circle.cyan   { background: var(--cyan);   color: #000; }
+    .num-circle.green  { background: var(--green);  color: #000; }
+    .num-circle.orange { background: var(--orange); color: #000; }
+    .num-body { flex: 1; }
+    .num-title {
+      font-size: 16px; font-weight: 700;
+      margin-bottom: 4px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .num-desc { font-size: 14px; color: var(--text-sub); line-height: 1.6; }
+
+    /* ===== DEFINITION SLIDE ===== */
+    .definition-box {
+      background: var(--card-bg);
+      border: 2px solid rgba(168,85,247,0.5);
+      border-radius: 14px;
+      padding: 20px 36px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .definition-title {
+      font-size: 20px; font-weight: 700;
+      color: var(--text); margin-bottom: 10px;
+    }
+    .definition-text {
+      font-size: 18px;
+      color: var(--text-sub);
+      line-height: 1.8;
+    }
+
+    /* ===== STAGES ===== */
+    .stages-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      width: 100%;
+      max-width: 1060px;
+    }
+    .stage-card {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+    }
+    .stage-card.active {
+      background: rgba(6,182,212,0.1);
+      border: 1px solid rgba(6,182,212,0.4);
+    }
+    .stage-arrow {
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 12px;
+      color: var(--text-muted);
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .stage-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .stage-icon { font-size: 42px; margin-bottom: 10px; }
+    .stage-title {
+      font-size: 19px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .stage-desc { font-size: 13px; color: var(--text-sub); line-height: 1.5; }
+
+    /* ===== TITLE SLIDE ===== */
+    .title-slide-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      max-width: 900px;
+      text-align: center;
+    }
+    .title-main {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .title-sub {
+      font-size: 22px;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+    .title-meta {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 999;
+      background: rgba(10,10,24,0.7);
+      padding: 8px 18px;
+      border-radius: 40px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.15); }
+    .slide-counter {
+      font-size: 13px;
+      color: var(--text-sub);
+      min-width: 52px;
+      text-align: center;
+    }
+    .progress-dots {
+      display: flex; gap: 6px; align-items: center;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transition: all 0.2s;
+    }
+    .dot.active { background: var(--purple); width: 18px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="presentation">
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: title                                           -->
+  <!-- 용도: 첫 슬라이드, 섹션 구분, 클로징                          -->
+  <!-- ============================================================ -->
+  <div class="slide active">
+    <div class="title-slide-content">
+      <div class="title-main gradient" style="background:linear-gradient(135deg,#a855f7,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        발표 제목
+      </div>
+      <div class="title-sub">
+        부제목 또는 한 줄 설명이 들어갑니다.<br>
+        두 줄도 가능합니다.
+      </div>
+      <div class="title-meta">발표자 · 2026.04.25</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: cards-3                                         -->
+  <!-- 용도: 3개 통계/지표/개념 강조. 큰 숫자나 이모지 아이콘 사용    -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-title white">슬라이드 제목</div>
+    <div class="slide-subtitle">부제 또는 한 줄 설명</div>
+    <div class="grid-3">
+      <div class="card accent-purple stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-number">80%</div>
+        <div class="stat-label">항목 이름</div>
+        <div class="stat-desc">설명 텍스트가 여기 들어갑니다. 2~3줄 정도.</div>
+      </div>
+      <div class="card accent-cyan stat-card">
+        <div class="stat-icon">🧠</div>
+        <div class="stat-number cyan">90%</div>
+        <div class="stat-label">항목 이름</div>
+        <div class="stat-desc">설명 텍스트가 여기 들어갑니다.</div>
+      </div>
+      <div class="card accent-orange stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-number orange">3개</div>
+        <div class="stat-label">항목 이름</div>
+        <div class="stat-desc">설명 텍스트가 여기 들어갑니다.</div>
+      </div>
+    </div>
+    <div class="caption">하단 캡션 — <strong>강조 텍스트</strong>도 사용 가능</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: comparison                                      -->
+  <!-- 용도: A vs B 비교 (2열 테이블 형태)                           -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-title white">A <span class="hl-purple">vs</span> B</div>
+    <div class="slide-subtitle">크게 다를 게 없다 — 세부 차이 비교</div>
+    <div class="comparison-table">
+      <div class="comparison-headers">
+        <div class="comparison-header left-col"></div>
+        <div class="comparison-header col-a">🧠 A 이름 <span style="font-size:13px;font-weight:400;color:#94a3b8;margin-left:6px;">Company</span></div>
+        <div class="comparison-header col-b">⚡ B 이름 <span style="font-size:13px;font-weight:400;color:#94a3b8;margin-left:6px;">Company</span></div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-row-label">항목 1</div>
+        <div class="comparison-cell">값 A</div>
+        <div class="comparison-cell">값 B</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-row-label">항목 2</div>
+        <div class="comparison-cell">값 A</div>
+        <div class="comparison-cell highlighted">값 B (강조)</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-row-label">항목 3</div>
+        <div class="comparison-cell">값 A</div>
+        <div class="comparison-cell">값 B</div>
+      </div>
+      <div class="comparison-footer">
+        <span class="label">공통점</span>공통된 특징 · 공통점 · 본질은 같다
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: timeline                                        -->
+  <!-- 용도: 단계적 진행, 역사적 흐름, 순서가 있는 개념 4개 이하     -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-title gradient">타임라인 / 단계 제목</div>
+    <div class="slide-subtitle">순서 설명 한 줄</div>
+    <div class="timeline-wrap">
+      <div class="timeline-item">
+        <div class="timeline-connector">
+          <div class="tl-num" style="background:var(--purple);">01</div>
+          <div class="tl-bar" style="background:var(--purple);"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title" style="color:var(--purple);">단계 1 이름</div>
+          <div class="tl-desc">단계 설명 한두 줄</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-connector">
+          <div class="tl-num" style="background:var(--cyan);">02</div>
+          <div class="tl-bar" style="background:var(--cyan);"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title" style="color:var(--cyan);">단계 2 이름</div>
+          <div class="tl-desc">단계 설명 한두 줄</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-connector">
+          <div class="tl-num" style="background:var(--green);">03</div>
+          <div class="tl-bar" style="background:var(--green);"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title" style="color:var(--green);">단계 3 이름</div>
+          <div class="tl-desc">단계 설명 한두 줄</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-connector">
+          <div class="tl-num" style="background:var(--orange);">04</div>
+          <div class="tl-bar" style="background:transparent;"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title" style="color:var(--orange);">단계 4 이름</div>
+          <div class="tl-desc">단계 설명 한두 줄</div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">하단 주석 — <strong>강조</strong></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: numbered-list                                   -->
+  <!-- 용도: 3~5개 항목, 단계적 설명, active 항목 하이라이트 가능    -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-title gradient">리스트 슬라이드 제목</div>
+    <div class="slide-subtitle">부제</div>
+    <div class="num-list">
+      <div class="num-item">
+        <div class="num-circle">1</div>
+        <div class="num-body">
+          <div class="num-title">항목 제목 <span class="tag purple">태그</span></div>
+          <div class="num-desc">항목 설명이 여기에 들어갑니다. 두 줄까지 가능합니다.</div>
+        </div>
+      </div>
+      <div class="num-item">
+        <div class="num-circle cyan">2</div>
+        <div class="num-body">
+          <div class="num-title">항목 제목 <span class="tag cyan">태그</span></div>
+          <div class="num-desc">항목 설명이 여기에 들어갑니다.</div>
+        </div>
+      </div>
+      <div class="num-item active">
+        <div class="num-circle green">3</div>
+        <div class="num-body">
+          <div class="num-title">강조된 항목 <span class="tag green">핵심</span></div>
+          <div class="num-desc">이 항목은 active 상태로 시각적으로 강조됩니다 — <strong>핵심 내용</strong></div>
+        </div>
+      </div>
+      <div class="num-item">
+        <div class="num-circle orange">4</div>
+        <div class="num-body">
+          <div class="num-title">항목 제목 <span class="tag orange">태그</span></div>
+          <div class="num-desc">항목 설명이 여기에 들어갑니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: definition                                      -->
+  <!-- 용도: 개념 정의 + 서포팅 카드 (타임라인 or 비교)              -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-title gradient">개념 정의 슬라이드</div>
+    <div class="definition-box" style="max-width:600px;">
+      <div class="definition-title">핵심 개념 이름</div>
+      <div class="definition-text">
+        개념에 대한 <span class="hl-purple">핵심 설명</span>이 여기에 들어갑니다.<br>
+        <span class="hl-cyan">중요한 부분</span>은 컬러로 강조할 수 있습니다.
+      </div>
+    </div>
+    <div class="grid-3" style="max-width:900px;">
+      <div class="card no-accent" style="text-align:center;">
+        <div style="font-size:12px;color:var(--purple);font-weight:700;letter-spacing:1px;margin-bottom:8px;">1970s</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:4px;">단계 A</div>
+        <div style="font-size:13px;color:var(--text-sub);">설명</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:22px;">→</div>
+      <div class="card accent-purple" style="text-align:center;">
+        <div style="font-size:12px;color:var(--purple);font-weight:700;letter-spacing:1px;margin-bottom:8px;">현재</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:4px;">단계 B</div>
+        <div style="font-size:13px;color:var(--text-sub);">설명</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: stages                                          -->
+  <!-- 용도: 단계 진행 (화살표로 연결), 특정 단계 강조              -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-title gradient">단계 진행 슬라이드</div>
+    <div class="slide-subtitle">각 단계의 흐름 설명</div>
+    <div class="stages-wrap">
+      <div class="stage-card">
+        <div class="stage-label">STAGE 01</div>
+        <div class="stage-icon">💬</div>
+        <div class="stage-title">단계 1 이름</div>
+        <div class="stage-desc">단계 설명</div>
+      </div>
+      <div class="stage-arrow">→</div>
+      <div class="stage-card active">
+        <div class="stage-label" style="color:var(--cyan);">STAGE 02</div>
+        <div class="stage-icon">📋</div>
+        <div class="stage-title" style="color:var(--cyan);">단계 2 이름</div>
+        <div class="stage-desc">강조된 단계 설명</div>
+      </div>
+      <div class="stage-arrow">→</div>
+      <div class="stage-card">
+        <div class="stage-label">STAGE 03</div>
+        <div class="stage-icon">❓</div>
+        <div class="stage-title">단계 3 이름</div>
+        <div class="stage-desc">단계 설명</div>
+      </div>
+    </div>
+    <div class="caption">하단 캡션 — <strong>강조</strong> 가능</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LAYOUT TYPE: cards-2                                         -->
+  <!-- 용도: 2개 개념 비교 또는 나란히 설명                          -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-title gradient">두 가지 개념</div>
+    <div class="slide-subtitle">부제</div>
+    <div class="grid-2">
+      <div class="card accent-orange">
+        <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
+        <div style="font-size:20px;font-weight:700;color:var(--orange);margin-bottom:8px;">개념 A</div>
+        <div style="font-size:15px;color:var(--text);margin-bottom:8px;">핵심 설명 한두 줄</div>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;">
+          <li style="font-size:13px;color:var(--text-sub);">• 세부 항목 1</li>
+          <li style="font-size:13px;color:var(--text-sub);">• 세부 항목 2</li>
+          <li style="font-size:13px;color:var(--text-sub);">• 세부 항목 3</li>
+        </ul>
+      </div>
+      <div class="card accent-cyan">
+        <div style="font-size:40px;margin-bottom:12px;">🚧</div>
+        <div style="font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:8px;">개념 B</div>
+        <div style="font-size:15px;color:var(--text);margin-bottom:8px;">핵심 설명 한두 줄</div>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;">
+          <li style="font-size:13px;color:var(--text-sub);">• 세부 항목 1</li>
+          <li style="font-size:13px;color:var(--text-sub);">• 세부 항목 2</li>
+          <li style="font-size:13px;color:var(--text-sub);">• 세부 항목 3</li>
+        </ul>
+      </div>
+    </div>
+    <div class="caption">
+      <span style="display:inline-flex;align-items:center;gap:8px;">
+        <span style="color:var(--red);">✗ 개념 A</span>
+        <span style="color:var(--text-muted);">→</span>
+        <span style="color:var(--green);">✓ 개념 B</span>
+      </span>
+    </div>
+  </div>
+
+</div><!-- /presentation -->
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <button class="nav-btn" onclick="move(-1)">&#8592;</button>
+  <div class="progress-dots" id="dots"></div>
+  <span class="slide-counter" id="counter">1 / 8</span>
+  <button class="nav-btn" onclick="move(1)">&#8594;</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  const dotsEl  = document.getElementById('dots');
+  let cur = 0;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => go(i);
+    d.style.cursor = 'pointer';
+    dotsEl.appendChild(d);
+  });
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('active');
+    counter.textContent = `${cur + 1} / ${slides.length}`;
+  }
+
+  function move(dir) { go(cur + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  move(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    move(-1);
+  });
+</script>
+</body>
+</html>
