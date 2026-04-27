@@ -739,8 +739,6 @@
 
 <!-- ===== NAVIGATION ===== -->
 <div class="slide-counter" id="counter">1 / 8</div>
-<div id="click-prev" style="position:fixed;left:0;top:0;width:50%;height:100%;cursor:w-resize;z-index:10;"></div>
-<div id="click-next" style="position:fixed;right:0;top:0;width:50%;height:100%;cursor:e-resize;z-index:10;"></div>
 
 <script>
   const slides = document.querySelectorAll('.slide');
@@ -756,8 +754,10 @@
 
   function move(dir) { go(cur + dir); }
 
-  document.getElementById('click-prev').onclick = () => move(-1);
-  document.getElementById('click-next').onclick = () => move(1);
+  document.querySelector('.presentation').addEventListener('click', e => {
+    if (e.clientX < window.innerWidth / 2) move(-1);
+    else move(1);
+  });
 
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') move(1);
