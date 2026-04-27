@@ -85,6 +85,78 @@ HTML 생성 전 아래 형식으로 먼저 보여준다.
 `<주제_영문요약>_slides.html` — 현재 작업 디렉토리에 저장
 예: `ai_engineering_slides.html`, `bodoc_architecture_slides.html`
 
+## Step 4-1: 타이포그래피 & 인터랙션 (v2.0+)
+
+### 텍스트 크기 표준 (가독성 최적화)
+
+| 요소 | 크기 | 용도 | 주의사항 |
+|------|------|------|---------|
+| **타이틀 (title-main)** | 72px | 첫 슬라이드, 최상위 제목 | 강렬하고 명확함 |
+| **슬라이드 제목 (.slide-title)** | 52px | 각 슬라이드 제목 | — |
+| **서브타이틀 (.slide-subtitle)** | **21px** ✨ | 제목 아래 설명 | v1.0에서 17px → 21px 개선 (가독성↑) |
+| **타이틀 서브 (.title-sub)** | 22px | 타이틀 슬라이드 부제 | — |
+| **카드 설명 (.stat-desc)** | **15px** ✨ | 카드 내 설명 텍스트 | v1.0에서 14px → 15px 개선 |
+| **리스트 제목 (.num-title)** | 16px | 번호 목록 항목 제목 | — |
+| **리스트 설명 (.num-desc)** | 14px | 번호 목록 항목 설명 | — |
+| **타임라인 설명 (.tl-desc)** | **14px** ✨ | 타임라인 단계 설명 | v1.0에서 13px → 14px 개선 |
+| **캡션 (.caption)** | 15px | 하단 주석 | — |
+
+**📌 개선 이유:** 프레젠테이션 거리에서 뒤에 앉은 청중도 충분히 읽을 수 있도록 조정.
+
+### 호버 효과 시스템 (v2.0+)
+
+모든 인터랙티브 요소에 부드러운 호버 효과 적용. **화면 흔들림 없음** (transform 대신 색상 + 글로우만 사용).
+
+#### 카드 호버
+```css
+.card:hover {
+  background: rgba(18, 18, 42, 0.9);  /* 배경 진하게 */
+  box-shadow: 0 8px 28px rgba(168, 85, 247, 0.4);  /* 보라색 글로우 */
+}
+```
+- 마우스를 카드 위에 올리면 배경색이 진해지고 글로우 효과
+- UI 안정성: 레이아웃 변화 없음 (색상만 변경)
+
+#### 제목 호버
+```css
+.slide-title:hover {
+  text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);  /* 텍스트 글로우 */
+}
+```
+- 제목에 마우스를 올리면 텍스트가 발광
+
+#### 번호 항목 호버
+```css
+.num-item:hover {
+  background: rgba(168, 85, 247, 0.18);  /* 배경 강조 */
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.25);  /* 은은한 글로우 */
+}
+```
+- 리스트 항목에 마우스를 올리면 강조됨
+
+#### 네비게이션 버튼 호버 (JavaScript)
+```javascript
+btn.addEventListener('mouseenter', () => {
+  btn.style.backgroundColor = 'rgba(168, 85, 247, 0.6)';  /* 보라색 */
+  btn.style.transform = 'scale(1.15)';  /* 15% 확대 */
+  btn.style.boxShadow = '0 0 24px rgba(168, 85, 247, 0.8)';  /* 강한 글로우 */
+});
+```
+- 좌우 화살표 버튼에 마우스를 올리면 보라색으로 밝아지고 확대
+- 버튼은 작은 요소이므로 scale 효과 사용 가능
+
+#### 진행 점 호버 (JavaScript)
+```javascript
+dot.addEventListener('mouseenter', () => {
+  dot.style.backgroundColor = 'rgba(168, 85, 247, 0.8)';  /* 보라색 */
+  dot.style.transform = 'scale(1.5)';  /* 50% 확대 */
+  dot.style.boxShadow = '0 0 16px rgba(168, 85, 247, 0.6)';  /* 글로우 */
+});
+```
+- 하단 진행 점에 마우스를 올리면 보라색으로 강조되고 확대
+
+**⚠️ 주의:** 슬라이드 내용(카드, 리스트)의 호버는 색상만 사용하여 레이아웃 변화 없음. 네비게이션 요소(버튼, 점)의 호버만 scale 효과 사용.
+
 ---
 
 ## 디자인 시스템
