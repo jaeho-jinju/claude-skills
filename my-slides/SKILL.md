@@ -134,28 +134,7 @@ HTML 생성 전 아래 형식으로 먼저 보여준다.
 ```
 - 리스트 항목에 마우스를 올리면 강조됨
 
-#### 네비게이션 버튼 호버 (JavaScript)
-```javascript
-btn.addEventListener('mouseenter', () => {
-  btn.style.backgroundColor = 'rgba(168, 85, 247, 0.6)';  /* 보라색 */
-  btn.style.transform = 'scale(1.15)';  /* 15% 확대 */
-  btn.style.boxShadow = '0 0 24px rgba(168, 85, 247, 0.8)';  /* 강한 글로우 */
-});
-```
-- 좌우 화살표 버튼에 마우스를 올리면 보라색으로 밝아지고 확대
-- 버튼은 작은 요소이므로 scale 효과 사용 가능
-
-#### 진행 점 호버 (JavaScript)
-```javascript
-dot.addEventListener('mouseenter', () => {
-  dot.style.backgroundColor = 'rgba(168, 85, 247, 0.8)';  /* 보라색 */
-  dot.style.transform = 'scale(1.5)';  /* 50% 확대 */
-  dot.style.boxShadow = '0 0 16px rgba(168, 85, 247, 0.6)';  /* 글로우 */
-});
-```
-- 하단 진행 점에 마우스를 올리면 보라색으로 강조되고 확대
-
-**⚠️ 주의:** 슬라이드 내용(카드, 리스트)의 호버는 색상만 사용하여 레이아웃 변화 없음. 네비게이션 요소(버튼, 점)의 호버만 scale 효과 사용.
+**⚠️ 주의:** 슬라이드 내용(카드, 리스트)의 호버는 색상만 사용하여 레이아웃 변화 없음.
 
 ---
 

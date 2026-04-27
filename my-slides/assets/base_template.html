@@ -405,58 +405,16 @@
     }
 
     /* ===== NAVIGATION ===== */
-    .nav {
+    .slide-counter {
       position: fixed;
-      bottom: 28px;
+      bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 999;
-      background: rgba(10,10,24,0.7);
-      padding: 8px 18px;
-      border-radius: 40px;
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-    .nav-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #fff;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 16px;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s ease-out;
-    }
-    .nav-btn:hover {
-      background: rgba(255,255,255,0.15);
-      transform: scale(1.08);
-      box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
-    }
-    .slide-counter {
       font-size: 13px;
-      color: var(--text-sub);
-      min-width: 52px;
-      text-align: center;
+      color: var(--text-muted);
+      z-index: 20;
+      pointer-events: none;
     }
-    .progress-dots {
-      display: flex; gap: 6px; align-items: center;
-    }
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-    .dot:hover {
-      background: rgba(255,255,255,0.4);
-      transform: scale(1.2);
-    }
-    .dot.active { background: var(--purple); width: 18px; border-radius: 3px; }
 
     /* ===== INTERACTIVE HOVER ===== */
     .card {
@@ -780,71 +738,30 @@
 </div><!-- /presentation -->
 
 <!-- ===== NAVIGATION ===== -->
-<nav class="nav">
-  <button class="nav-btn" onclick="move(-1)">&#8592;</button>
-  <div class="progress-dots" id="dots"></div>
-  <span class="slide-counter" id="counter">1 / 8</span>
-  <button class="nav-btn" onclick="move(1)">&#8594;</button>
-</nav>
+<div class="slide-counter" id="counter">1 / 8</div>
+<div id="click-prev" style="position:fixed;left:0;top:0;width:50%;height:100%;cursor:w-resize;z-index:10;"></div>
+<div id="click-next" style="position:fixed;right:0;top:0;width:50%;height:100%;cursor:e-resize;z-index:10;"></div>
 
 <script>
   const slides = document.querySelectorAll('.slide');
   const counter = document.getElementById('counter');
-  const dotsEl  = document.getElementById('dots');
   let cur = 0;
-
-  // Build dots
-  slides.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => go(i);
-    d.style.cursor = 'pointer';
-    dotsEl.appendChild(d);
-  });
 
   function go(n) {
     slides[cur].classList.remove('active');
-    dotsEl.children[cur].classList.remove('active');
     cur = (n + slides.length) % slides.length;
     slides[cur].classList.add('active');
-    dotsEl.children[cur].classList.add('active');
     counter.textContent = `${cur + 1} / ${slides.length}`;
   }
 
   function move(dir) { go(cur + dir); }
 
+  document.getElementById('click-prev').onclick = () => move(-1);
+  document.getElementById('click-next').onclick = () => move(1);
+
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  move(1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    move(-1);
-  });
-
-  // Add hover effects to buttons and dots
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('mouseenter', () => {
-      btn.style.backgroundColor = 'rgba(168, 85, 247, 0.6)';
-      btn.style.transform = 'scale(1.15)';
-      btn.style.boxShadow = '0 0 24px rgba(168, 85, 247, 0.8)';
-    });
-    btn.addEventListener('mouseleave', () => {
-      btn.style.backgroundColor = 'rgba(255,255,255,0.08)';
-      btn.style.transform = 'scale(1)';
-      btn.style.boxShadow = 'none';
-    });
-  });
-
-  document.querySelectorAll('.dot').forEach(dot => {
-    dot.addEventListener('mouseenter', () => {
-      dot.style.backgroundColor = 'rgba(168, 85, 247, 0.8)';
-      dot.style.transform = 'scale(1.5)';
-      dot.style.boxShadow = '0 0 16px rgba(168, 85, 247, 0.6)';
-    });
-    dot.addEventListener('mouseleave', () => {
-      if (!dot.classList.contains('active')) {
-        dot.style.backgroundColor = 'rgba(255,255,255,0.2)';
-        dot.style.transform = 'scale(1)';
-        dot.style.boxShadow = 'none';
-      }
-    });
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') move(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   move(-1);
   });
 </script>
 </body>
