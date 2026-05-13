@@ -30,4 +30,21 @@ for skill_dir in "$REPO_DIR"/skills/*/; do
   fi
 done
 
+# CLAUDE.md 설치
+CLAUDE_MD="$REPO_DIR/CLAUDE.md"
+CLAUDE_TARGET="$HOME/.claude/CLAUDE.md"
+
+if [ -f "$CLAUDE_MD" ]; then
+  if [ -L "$CLAUDE_TARGET" ]; then
+    rm "$CLAUDE_TARGET"
+    ln -s "$CLAUDE_MD" "$CLAUDE_TARGET"
+    echo "  Updated:   CLAUDE.md"
+  elif [ -f "$CLAUDE_TARGET" ]; then
+    echo "  Skipped:   CLAUDE.md (이미 존재하는 파일 — 직접 제거 후 재실행)"
+  else
+    ln -s "$CLAUDE_MD" "$CLAUDE_TARGET"
+    echo "  Installed: CLAUDE.md"
+  fi
+fi
+
 echo "Done!"
