@@ -8,7 +8,7 @@ mkdir -p "$SKILLS_DIR"
 
 echo "Installing Claude skills to $SKILLS_DIR..."
 
-for skill_dir in "$REPO_DIR"/*/; do
+for skill_dir in "$REPO_DIR"/skills/*/; do
   skill_name=$(basename "$skill_dir")
 
   # SKILL.md 없으면 스킬 폴더가 아님 — 건너뜀
